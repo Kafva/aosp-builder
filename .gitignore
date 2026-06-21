@@ -1,0 +1,7 @@
+build
+*.swp
+*~
+~$*
+*.core
+.tags
+.DS_Store
