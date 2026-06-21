@@ -41,3 +41,4 @@ RUN git config --global user.name "builder"
 RUN git config --global remote.origin.prune true
 RUN git config --global fetch.prune true
 RUN git config --global commit.gpgsign false
+RUN git config --global color.ui true
