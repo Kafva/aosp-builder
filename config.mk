@@ -1,10 +1,13 @@
+SYNC_JOBS ?= 1
+BUILD_JOBS ?= 3
+
 AOSP_ARCH ?= $(shell uname -m)
 
 ifeq ($(TARGET),aosp)
 AOSP_VERSION = 17
 AOSP_API = 37
 AOSP_BRANCH = android-$(AOSP_VERSION).0.0_r1
-AOSP_TARGET = sdk_phone64_$(AOSP_ARCH)-trunk_staging-userdebug
+AOSP_TARGET = sdk_phone64_$(AOSP_ARCH)-trunk_staging-eng
 AOSP_MANIFEST_URL = https://android.googlesource.com/platform/manifest
 
 else ifeq ($(TARGET),grapheneos)

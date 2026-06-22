@@ -31,7 +31,7 @@ define run
 endef
 
 define aosp_run
-	cd $(AOSP) && . build/envsetup.sh && lunch $(AOSP_TARGET) && ${1}
+	. envsetup.sh && cd $(AOSP) && . build/envsetup.sh && lunch $(AOSP_TARGET) && ${1}
 endef
 
 ## Targets #####################################################################
@@ -47,7 +47,7 @@ $(AOSP)/.repo: $(REPO)
 
 _source: $(AOSP)/.synced
 $(AOSP)/.synced: $(AOSP)/.repo
-	cd $(AOSP) && $(REPO) sync -j1 \
+	cd $(AOSP) && $(REPO) sync -j $(SYNC_JOBS) \
 		--force-sync \
 		--force-checkout \
 		--force-remove-dirty \
@@ -56,7 +56,7 @@ $(AOSP)/.synced: $(AOSP)/.repo
 	@touch $@
 
 _build:
-	$(call aosp_run,m -j $(shell nproc) 2>&1 | tee build-$(shell date '+%Y-%m-%d-%H-%M').log)
+	$(call aosp_run,m -j $(BUILD_JOBS) 2>&1 | tee build-$(shell date '+%Y-%m-%d-%H-%M').log)
 	$(call aosp_run,m emu_img_zip)
 	cp $(AOSP)/out/target/product/emu64*/sdk-repo-linux-system-images.zip $(OUT)/
 

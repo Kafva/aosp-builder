@@ -8,3 +8,10 @@ The following targets are supported:
 ```bash
 make TARGET=... source && make TARGET=... build
 ```
+
+
+## Tips
+* At least 64 GB of RAM is recommended to build, building with less can work
+but requires a lot of swap space (>= 16 GB) and a low job count (<= 6).
+* If you are looking for the `emulator` sources, these are usually not part of
+the aosp checkout, they can be found [here](https://android.googlesource.com/platform/external/qemu).
