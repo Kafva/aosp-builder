@@ -17,6 +17,7 @@ apt-get install -y \
     python3-dev \
     zip \
     make \
+    rsync \
     ccache
 
 rm -rf /var/lib/apt/

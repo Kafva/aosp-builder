@@ -1,7 +1,7 @@
 include config.mk
 
 SHELL = /bin/bash
-.SHELLFLAGS = -ec
+.SHELLFLAGS = -ec -o pipefail
 
 ifeq ($(shell uname),Darwin)
 CONTAINER_BUILD = container build
