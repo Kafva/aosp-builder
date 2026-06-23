@@ -1,5 +1,5 @@
 SYNC_JOBS ?= 1
-BUILD_JOBS ?= 3
+BUILD_JOBS ?= 8
 
 AOSP_ARCH ?= $(shell uname -m)
 
