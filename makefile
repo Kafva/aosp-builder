@@ -55,7 +55,7 @@ $(AOSP)/.synced: $(AOSP)/.repo
 		--auto-gc
 	@touch $@
 
-_build:
+_build: _source
 	$(call aosp_run,m -j $(BUILD_JOBS) 2>&1 | tee build-$(shell date '+%Y-%m-%d-%H-%M').log)
 	$(call aosp_run,m emu_img_zip)
 	cp $(AOSP)/out/target/product/emu64*/sdk-repo-linux-system-images.zip $(OUT)/
