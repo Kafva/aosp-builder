@@ -20,3 +20,6 @@ AOSP_MANIFEST_URL = https://github.com/GrapheneOS/platform_manifest.git
 else
 $(error Unsupported TARGET)
 endif
+
+# Tag name to use when creating a new release.
+TAG ?= $(shell date '+%Y.%m.%d')

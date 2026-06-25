@@ -69,6 +69,18 @@ _patch:
 _unpatch:
 	cd $(AOSP) && repo forall -c git reset --hard HEAD
 
+release:
+	git tag -f $(TAG)
+	git remote add gh git@github.com:Kafva/aosp-builder.git 2> /dev/null || :
+	git push -d gh $(TAG) 2> /dev/null || :
+	git push gh $(TAG)
+	git push -d origin $(TAG) 2> /dev/null || :
+	git push origin $(TAG)
+	@# Make sure release has been created server side
+	sleep 10
+	gh release create --notes-from-tag --title $(TAG) $(TAG) $(wildcard out/*.zip)
+	gh release upload $(TAG) $(wildcard out/*.zip)
+
 ## Docker wrappers #############################################################
 source:
 	$(call run,make _source)
