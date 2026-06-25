@@ -57,9 +57,11 @@ $(AOSP)/.synced: $(AOSP)/.repo
 
 _build:
 	$(call aosp_run,m -j $(BUILD_JOBS) 2>&1 | tee build-$(shell date '+%Y-%m-%d-%H-%M').log)
-	@# TODO: emu_img_zip target seems broken in A17 ?
 	$(call aosp_run,m emu_img_zip)
 	cp $(AOSP)/out/target/product/emu64*/sdk-repo-linux-system-images.zip $(OUT)/
+
+_shell:
+	$(call aosp_run,bash)
 
 _patch:
 	./scripts/patch.sh $(AOSP)
@@ -81,4 +83,4 @@ build:
 	$(call run,make _build)
 
 shell:
-	$(call run,bash)
+	$(call run,make _shell)
