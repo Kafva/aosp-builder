@@ -1,5 +1,7 @@
 include config.mk
 
+.PHONY: _build build
+
 SHELL = /bin/bash
 .SHELLFLAGS = -ec -o pipefail
 
@@ -26,6 +28,7 @@ define run
 		-t aosp-builder $(CURDIR) && \
 	$(CONTAINER_RUN) -it -u $(shell id -u):$(shell id -g) --rm \
 		-e TARGET=$(TARGET) \
+		-e AOSP_ARCH=$(AOSP_ARCH) \
 		--mount type=bind,src=$(CURDIR),target=$(CONTAINER_MNT) \
 		aosp-builder:latest /bin/bash -c "${1}";
 endef
@@ -35,8 +38,6 @@ define aosp_run
 endef
 
 ## Targets #####################################################################
-.PHONY: _build build
-
 $(REPO):
 	git clone https://gerrit.googlesource.com/git-repo $(@D)
 	chmod a+x $@
@@ -45,20 +46,23 @@ $(AOSP)/.repo: $(REPO)
 	mkdir -p $(@D)
 	cd $(@D) && $(REPO) init -u $(AOSP_MANIFEST_URL) -b $(AOSP_BRANCH)
 
-_source: $(AOSP)/.synced
-$(AOSP)/.synced: $(AOSP)/.repo
+_sync: $(AOSP)/.repo
 	cd $(AOSP) && $(REPO) sync -j $(SYNC_JOBS) \
 		--force-sync \
 		--force-checkout \
 		--force-remove-dirty \
 		--fail-fast \
 		--auto-gc
-	@touch $@
 
-_build: _source
+_build:
 	$(call aosp_run,m -j $(BUILD_JOBS) 2>&1 | tee build-$(shell date '+%Y-%m-%d-%H-%M').log)
+ifneq ($(findstring sdk_,$(AOSP_TARGET)),)
 	$(call aosp_run,m emu_img_zip)
-	cp $(AOSP)/out/target/product/emu64*/sdk-repo-linux-system-images.zip $(OUT)/
+	./scripts/package_avd.sh \
+		-i $(AOSP)/out/target/product/emu64*/sdk-repo-linux-system-images.zip \
+		-o $(OUT)/$(TARGET)-$(AOSP_BRANCH)-$(AOSP_ARCH)-system-images.tar.xz \
+		-n $(TARGET)-$(AOSP_BRANCH)
+endif
 
 _shell:
 	$(call aosp_run,bash)
@@ -78,12 +82,12 @@ release:
 	git push origin $(TAG)
 	@# Make sure release has been created server side
 	sleep 10
-	gh release create --notes-from-tag --title $(TAG) $(TAG) $(wildcard out/*.zip)
-	gh release upload $(TAG) $(wildcard out/*.zip)
+	gh release create --notes-from-tag --title $(TAG) $(TAG) $(wildcard out/*.tar.xz)
+	gh release upload $(TAG) $(wildcard out/*.tar.xz)
 
 ## Docker wrappers #############################################################
-source:
-	$(call run,make _source)
+sync:
+	$(call run,make _sync)
 
 patch:
 	$(call run,make _patch)

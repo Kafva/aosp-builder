@@ -2,5 +2,5 @@
 set -e
 
 while read -r f; do
-    (cd $1/$(dirname ${f##./patches/}) && git apply -v -C100 $f)
+    git -C "$1/$(dirname ${f##./patches/})" apply -v -C100 $PWD/$f
 done < <(find ./patches -type f -name '*.diff')
