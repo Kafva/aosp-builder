@@ -28,25 +28,20 @@ one of the most RAM intensive stages, `SOONG_ONLY=true` reduces the required
 RAM a bit.
 
 ## Running emulator builds
-The build output is saved in a tar archive under `out`. To run the emulator with this
-build follow the steps below (replacing grapheneos-15 etc. with values applicable to you).
+To run the emulator with the images from a build (example with "grapheneos" below):
 
-1. Unpack the AVD archive on your host
+1. Unpack the system images under your SDK root:
 ```bash
-tar -xf ./grapheneos-15-x86_64-system-images.tar.xz -C ~/.android/avd/
-# => ~/.android/avd/grapheneos-15.avd
+mkdir -p $ANDROID_HOME/system-images/android-36/grapheneos
+tar -xf ./grapheneos-16-x86_64-system-images.tar.xz -C $ANDROID_HOME/system-images/android-36/grapheneos
 ```
-2. Create an AVD config for it:
+2. Create an AVD with the images.
 ```bash
-cat << EOF > ~/.android/avd/grapheneos-15.ini
-avd.ini.encoding=UTF-8
-path.rel=avd/grapheneos-15.avd
-target=android-35
-EOF
+avdmanager create avd -n "grapheneos-16" -k "system-images;android-36;grapheneos;x86_64"
 ```
 3. Start the emulator
 ```bash
-emulator @grapheneos-15
+emulator @grapheneos-16
 ```
 
 Some prebuilt archives are available under [releases on

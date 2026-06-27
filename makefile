@@ -19,6 +19,7 @@ OUT = $(CURDIR)/out
 BUILD = $(CURDIR)/build
 AOSP = $(BUILD)/$(TARGET)-$(AOSP_BRANCH)
 REPO = $(BUILD)/git-repo/repo
+EMU_PRODUCT = emu64$(shell grep -o '^[a-z]' <<< $(AOSP_ARCH))
 
 ## Macros ######################################################################
 define run
@@ -58,10 +59,9 @@ _build:
 	$(call aosp_run,m -j $(BUILD_JOBS) 2>&1 | tee build-$(shell date '+%Y-%m-%d-%H-%M').log)
 ifneq ($(findstring sdk_,$(AOSP_TARGET)),)
 	$(call aosp_run,m emu_img_zip)
-	./scripts/package_avd.sh \
-		-i $(AOSP)/out/target/product/emu64*/sdk-repo-linux-system-images.zip \
-		-o $(OUT)/$(TARGET)-$(AOSP_BRANCH)-$(AOSP_ARCH)-system-images.tar.xz \
-		-n $(TARGET)-$(AOSP_BRANCH)
+	./scripts/package_images.sh \
+		-i $(AOSP)/out/target/product/$(EMU_PRODUCT)/sdk-repo-linux-system-images.zip \
+		-o $(OUT)/$(TARGET)-$(AOSP_BRANCH)-$(AOSP_ARCH)-system-images.tar.xz
 endif
 
 _shell:
@@ -83,7 +83,6 @@ release:
 	@# Make sure release has been created server side
 	sleep 10
 	gh release create --notes-from-tag --title $(TAG) $(TAG) $(wildcard out/*.tar.xz)
-	gh release upload $(TAG) $(wildcard out/*.tar.xz)
 
 ## Docker wrappers #############################################################
 sync:
