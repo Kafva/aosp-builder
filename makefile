@@ -73,6 +73,12 @@ _patch:
 _unpatch:
 	cd $(AOSP) && repo forall -c git reset --hard HEAD
 
+all:
+	$(MAKE) AOSP_ARCH=arm64 TARGET=aosp build
+	$(MAKE) AOSP_ARCH=arm64 TARGET=grapheneos build
+	$(MAKE) AOSP_ARCH=x86_64 TARGET=aosp build
+	$(MAKE) AOSP_ARCH=x86_64 TARGET=grapheneos build
+
 release:
 	git tag -f $(TAG)
 	git remote add gh git@github.com:Kafva/aosp-builder.git 2> /dev/null || :

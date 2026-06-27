@@ -15,7 +15,7 @@ AOSP_BRANCH = $(AOSP_VERSION)-qpr2
 AOSP_TARGET = sdk_phone64_$(AOSP_ARCH)-cur-userdebug
 AOSP_MANIFEST_URL = https://github.com/GrapheneOS/platform_manifest.git
 
-else
+else ifneq ($(MAKECMDGOALS),all)
 $(error Unsupported TARGET)
 endif
 
