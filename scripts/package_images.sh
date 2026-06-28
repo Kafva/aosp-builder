@@ -47,14 +47,15 @@ AVD_TMP=$(mktemp -d)
 
 echox unzip -q $EMU_IMG_ZIP -d $AVD_TMP
 ARCH=$(ls -1 $AVD_TMP)
+API_LEVEL=$(get_build_prop ro.build.version.sdk)
 
 cat << EOF > "$AVD_TMP/$ARCH/package.xml"
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <ns2:repository xmlns:ns2="http://schemas.android.com/repository/android/common/02" xmlns:ns3="http://schemas.android.com/repository/android/common/01" xmlns:ns4="http://schemas.android.com/repository/android/generic/01" xmlns:ns5="http://schemas.android.com/repository/android/generic/02" xmlns:ns6="http://schemas.android.com/sdk/android/repo/addon2/01" xmlns:ns7="http://schemas.android.com/sdk/android/repo/addon2/02" xmlns:ns8="http://schemas.android.com/sdk/android/repo/addon2/03" xmlns:ns9="http://schemas.android.com/sdk/android/repo/repository2/01" xmlns:ns10="http://schemas.android.com/sdk/android/repo/repository2/02" xmlns:ns11="http://schemas.android.com/sdk/android/repo/repository2/03" xmlns:ns12="http://schemas.android.com/sdk/android/repo/sys-img2/04" xmlns:ns13="http://schemas.android.com/sdk/android/repo/sys-img2/03" xmlns:ns14="http://schemas.android.com/sdk/android/repo/sys-img2/02" xmlns:ns15="http://schemas.android.com/sdk/android/repo/sys-img2/01">
-  <localPackage path="system-images;android-37;aosp;arm64-v8a" obsolete="false">
+  <localPackage path="system-images;android-$API_LEVEL;$TARGET;$ARCH" obsolete="false">
     <type-details
       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns12:sysImgDetailsType">
-      <api-level>$(get_build_prop ro.build.version.sdk)</api-level>
+      <api-level>$API_LEVEL</api-level>
       <extension-level>$(get_source_prop AndroidVersion.ExtensionLevel)</extension-level>
       <base-extension>true</base-extension>
       <tag>
