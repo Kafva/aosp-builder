@@ -17,6 +17,8 @@ To start the build:
 make TARGET=... build
 ```
 
+The target architecture can be set via `AOSP_ARCH` (x86_64/arm64).
+
 ### System requirements
 * OS: Linux or macOS (the build is done in a container, either Docker or Apple Container).
 * RAM: *At least* 64 GB.
